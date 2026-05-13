@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloza — CRM intelligent pour vendeurs</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1a56db;
+    --blue-light: #e8f0fe;
+    --blue-dark: #1239a6;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --green: #059669;
+    --green-light: #d1fae5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--blue);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-icon svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; }
+
+  .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { background: var(--bg); }
+
+  .btn-lg {
+    padding: 14px 32px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 6rem 2rem 5rem;
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-badge-dot {
+    width: 6px; height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 54px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--blue);
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .hero-note {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* STATS */
+  .stats {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--text);
+    display: block;
+  }
+  .stat-label { font-size: 13px; color: var(--muted); }
+
+  /* SECTIONS */
+  section { padding: 5rem 2rem; max-width: 960px; margin: 0 auto; }
+
+  .section-tag {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.3px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 520px;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .feature-card:hover {
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+  }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    background: var(--blue-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .feature-icon svg { width: 20px; height: 20px; stroke: var(--blue); fill: none; stroke-width: 2; }
+
+  .feature-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    counter-reset: step;
+  }
+
+  .step { position: relative; }
+
+  .step-num {
+    width: 36px; height: 36px;
+    background: var(--blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .step h3 { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .testimonial {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+
+  .testimonial-stars {
+    color: #f59e0b;
+    font-size: 14px;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+
+  .testimonial p { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 14px; font-style: italic; font-weight: 300; }
+
+  .testimonial-author { display: flex; align-items: center; gap: 10px; }
+
+  .testimonial-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .testimonial-name { font-size: 13px; font-weight: 500; }
+  .testimonial-role { font-size: 12px; color: var(--muted); }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .pricing-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+  }
+
+  .pricing-card.featured {
+    border: 2px solid var(--blue);
+    position: relative;
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--blue);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .pricing-name { font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 12px; }
+
+  .pricing-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pricing-price span { font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--muted); font-weight: 300; }
+  .pricing-desc { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+
+  .pricing-features { list-style: none; margin-bottom: 1.75rem; }
+
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    padding: 5px 0;
+    font-weight: 300;
+  }
+
+  .pricing-features li::before {
+    content: '';
+    width: 16px; height: 16px;
+    background: var(--green-light);
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23059669' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l3 3 5-5'/%3E%3C/svg%3E");
+    background-size: contain;
+  }
+
+  /* FAQ */
+  .faq { max-width: 640px; margin: 3rem auto 0; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+  }
+
+  .faq-item:first-child { border-top: 1px solid var(--border); }
+
+  .faq-q {
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .faq-q::after {
+    content: '+';
+    font-size: 20px;
+    color: var(--muted);
+    font-weight: 300;
+    transition: transform 0.2s;
+  }
+
+  .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+  .faq-a {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+    font-weight: 300;
+  }
+
+  .faq-item.open .faq-a {
+    max-height: 200px;
+    padding-top: 10px;
+  }
+
+  /* CTA FINAL */
+  .cta-final {
+    background: var(--blue);
+    color: white;
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+
+  .cta-final h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+
+  .cta-final p {
+    font-size: 16px;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .btn-white {
+    background: white;
+    color: var(--blue);
+    font-weight: 500;
+  }
+
+  .btn-white:hover { background: #f0f7ff; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 2rem;
+    font-size: 13px;
+  }
+
+  footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); max-width: 960px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 1rem; }
+    .nav-links a { display: none; }
+    .hero { padding: 4rem 1rem 3rem; }
+    section { padding: 3rem 1rem; }
+    .stats { gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    </div>
+    Cloza
+  </a>
+  <div class="nav-links">
+    <a href="#fonctionnalites">Fonctionnalités</a>
+    <a href="#temoignages">Avis</a>
+    <a href="#tarifs">Tarifs</a>
+    <a href="#tarifs" class="btn btn-primary">Essai gratuit</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    CRM intelligent avec IA intégrée
+  </div>
+  <h1>Fermez plus de deals.<br><em>Sans la complexité.</em></h1>
+  <p>Cloza suit vos prospects, analyse leur potentiel et vous dit exactement quoi faire pour les convertir — en quelques secondes.</p>
+  <div class="hero-cta">
+    <a href="#tarifs" class="btn btn-primary btn-lg">Commencer gratuitement</a>
+    <a href="#fonctionnalites" class="btn btn-outline btn-lg">Voir comment ça marche</a>
+  </div>
+  <p class="hero-note">Aucune carte de crédit · 14 jours gratuits · Annulable en tout temps</p>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <span class="stat-num">+40%</span>
+    <span class="stat-label">taux de closing moyen</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">2 min</span>
+    <span class="stat-label">pour démarrer</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">500+</span>
+    <span class="stat-label">vendeurs actifs</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">4.9/5</span>
+    <span class="stat-label">satisfaction client</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="fonctionnalites">
+  <div class="section-tag">Fonctionnalités</div>
+  <h2 class="section-title">Tout ce dont vous avez besoin.<br>Rien de superflu.</h2>
+  <p class="section-sub">Conçu pour les commerciaux qui veulent vendre, pas gérer un logiciel.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </div>
+      <h3>Pipeline visuel</h3>
+      <p>Suivez chaque prospect de Lead à Gagné en un coup d'œil. Changez le statut en un clic.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </div>
+      <h3>Conseils IA personnalisés</h3>
+      <p>L'IA analyse chaque prospect et vous suggère la meilleure action pour avancer dans la vente.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <h3>Stats en temps réel</h3>
+      <p>Taux de closing, revenu gagné, prospects actifs — votre tableau de bord toujours à jour.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Prêt en 2 minutes</h3>
+      <p>Pas de formation, pas de paramétrage compliqué. Ajoutez votre premier prospect tout de suite.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Multi-utilisateurs</h3>
+      <p>Invitez votre équipe et collaborez sur le même pipeline. Tout le monde est aligné.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <h3>Accès mobile</h3>
+      <p>Gérez vos prospects depuis votre téléphone, entre deux rendez-vous clients.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-tag">Comment ça marche</div>
+  <h2 class="section-title">Opérationnel en 3 étapes.</h2>
+  <p class="section-sub">Pas besoin d'un consultant pour démarrer.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Créez votre compte</h3>
+      <p>Inscrivez-vous en 30 secondes. Aucune carte de crédit requise pour l'essai gratuit.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Ajoutez vos prospects</h3>
+      <p>Importez vos contacts ou ajoutez-les manuellement. Assignez un statut et une valeur à chacun.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Laissez l'IA guider</h3>
+      <p>Consultez les conseils IA pour chaque prospect et agissez avec précision pour closer plus vite.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TESTIMONIALS -->
+<section id="temoignages">
+  <div class="section-tag">Témoignages</div>
+  <h2 class="section-title">Ils closent plus.<br>Ils ne reviendraient pas en arrière.</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p>"J'ai fermé 3 deals en une semaine grâce aux conseils IA. Je ne savais pas qu'un CRM pouvait être aussi simple et aussi puissant."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">ML</div>
+        <div>
+          <div class="testimonial-name">Marie Lapointe</div>
+          <div class="testimonial-role">Conseillère en assurances</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p>"On avait essayé Salesforce — trop compliqué pour notre équipe de 4. Cloza, c'est fait pour les vrais vendeurs sur le terrain."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">KB</div>
+        <div>
+          <div class="testimonial-name">Karim Benali</div>
+          <div class="testimonial-role">Courtier immobilier</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="testimonial-stars">★★★★★</div>
+      <p>"Mon taux de closing a augmenté de 40% en deux mois. L'IA me dit exactement quand et comment relancer chaque client."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">ST</div>
+        <div>
+          <div class="testimonial-name">Sophie Tremblay</div>
+          <div class="testimonial-role">Directrice commerciale, Innova Tech</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRICING -->
+<section id="tarifs" style="text-align:center;">
+  <div class="section-tag">Tarifs</div>
+  <h2 class="section-title">Simple, transparent, sans surprise.</h2>
+  <p class="section-sub" style="margin:0 auto;">14 jours gratuits sur tous les plans. Annulable en tout temps.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-name">Starter</div>
+      <div class="pricing-price">19 $<span>/mois</span></div>
+      <div class="pricing-desc">Jusqu'à 50 prospects</div>
+      <ul class="pricing-features">
+        <li>Pipeline complet</li>
+        <li>Statistiques de base</li>
+        <li>Notes sur chaque prospect</li>
+        <li>Support par email</li>
+      </ul>
+      <a href="#" class="btn btn-outline" style="width:100%; justify-content:center;">Commencer</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="featured-badge">Le plus populaire</div>
+      <div class="pricing-name">Pro</div>
+      <div class="pricing-price">39 $<span>/mois</span></div>
+      <div class="pricing-desc">Prospects illimités</div>
+      <ul class="pricing-features">
+        <li>Tout du plan Starter</li>
+        <li>Conseils IA illimités</li>
+        <li>Multi-utilisateurs (jusqu'à 5)</li>
+        <li>Support prioritaire</li>
+        <li>Export des données</li>
+      </ul>
+      <a href="#" class="btn btn-primary" style="width:100%; justify-content:center;">Commencer</a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FAQ -->
+<section style="text-align:center;">
+  <div class="section-tag">FAQ</div>
+  <h2 class="section-title">Questions fréquentes</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Dois-je fournir une carte de crédit pour l'essai ?</div>
+      <div class="faq-a">Non. L'essai gratuit de 14 jours ne nécessite aucune carte de crédit. Vous n'êtes facturé qu'à la fin de la période d'essai si vous choisissez de continuer.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Puis-je annuler à tout moment ?</div>
+      <div class="faq-a">Absolument. Vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Aucun frais d'annulation, aucune période d'engagement.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Comment fonctionnent les conseils IA ?</div>
+      <div class="faq-a">Pour chaque prospect, l'IA analyse son statut, sa valeur, et les notes que vous avez ajoutées, puis génère un conseil concret et personnalisé pour faire avancer la vente. C'est comme avoir un coach commercial disponible 24h/24.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Mes données sont-elles sécurisées ?</div>
+      <div class="faq-a">Oui. Toutes vos données sont chiffrées et hébergées sur des serveurs sécurisés. Nous ne partageons jamais vos informations avec des tiers.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Puis-je migrer depuis un autre CRM ?</div>
+      <div class="faq-a">Oui. Cloza accepte l'import CSV, ce qui vous permet de migrer facilement depuis Excel, HubSpot, ou tout autre outil.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-final">
+  <h2>Prêt à vendre plus intelligemment ?</h2>
+  <p>Rejoignez 500+ commerciaux qui closent plus avec Cloza.</p>
+  <a href="#tarifs" class="btn btn-white btn-lg">Commencer gratuitement — 14 jours offerts</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px;">
+    <a href="#">Confidentialité</a> &nbsp;·&nbsp;
+    <a href="#">Conditions d'utilisation</a> &nbsp;·&nbsp;
+    <a href="#">Contact</a>
+  </p>
+  <p>© 2026 Cloza. Tous droits réservés.</p>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+
+</body>
+</html>
